@@ -1,6 +1,5 @@
 const express = require("express");
 const dotenv = require("dotenv");
-const { PrismaClient } = require("@prisma/client");
 
 // configure dotenv to work in your application
 // defaultnya mencari file .env, jadi bisa langsung dotenv.config();
@@ -10,11 +9,14 @@ dotenv.config({
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const prisma = new PrismaClient();
+app.use(express.json());
 
 app.get("/", (request, response) => {
   response.status(200).send("Hello World!");
 });
+
+const productController = require("./product/product.controller");
+app.use("/products", productController);
 
 app
   .listen(PORT, () => {
