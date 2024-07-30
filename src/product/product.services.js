@@ -9,9 +9,7 @@ const {
   deleteProduct,
 } = require("./product.repository");
 
-const getAllProducts = async () => {
-  return await findProducts();
-};
+const getAllProducts = () => findProducts();
 
 const findProductById = async (id) => {
   const product = await findProduct(id);
@@ -34,12 +32,12 @@ const validateFields = (productData) => {
 
 const createProduct = async (productData) => {
   validateFields(productData);
-  return await insertProduct(productData);
+  return insertProduct(productData);
 };
 
 const editProductById = async (id, productData) => {
   await findProductById(id);
-  return await editProduct(id, productData);
+  return editProduct(id, productData);
 };
 
 const deleteProductById = async (id) => {
@@ -47,7 +45,7 @@ const deleteProductById = async (id) => {
   //   throw new Error("Product ID must be a number");
   // }
   await findProductById(id);
-  deleteProduct(id);
+  return deleteProduct(id);
 };
 
 module.exports = {

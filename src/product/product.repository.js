@@ -1,43 +1,23 @@
 const prisma = require("../db");
 
-const findProducts = async () => {
-  return await prisma.product.findMany();
+const findProducts = () => prisma.product.findMany();
+
+const findProduct = (id) => prisma.product.findUnique({ where: { id } });
+
+const insertProduct = (productData) => {
+  return prisma.product.create({
+    data: productData,
+  });
 };
 
-const findProduct = async (id) => {
-  return await prisma.product.findUnique({
+const editProduct = (id, productData) => {
+  return prisma.product.update({
     where: { id },
+    data: productData,
   });
 };
 
-const insertProduct = async (productData) => {
-  return await prisma.product.create({
-    data: {
-      name: productData.name,
-      price: productData.price,
-      description: productData.description,
-      image: productData.image,
-    },
-  });
-};
-
-const editProduct = async (id, productData) => {
-  return await prisma.product.update({
-    where: { id },
-    data: {
-      name: productData.name,
-      price: productData.price,
-      description: productData.description,
-      image: productData.image,
-    },
-  });
-};
-
-const deleteProduct = async (id) => {
-  await prisma.product.delete({
-    where: { id },
-  });
-};
+const deleteProduct = (id) => prisma.product.delete({ where: { id } });
 
 module.exports = {
   findProducts,

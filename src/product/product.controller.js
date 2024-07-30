@@ -9,7 +9,6 @@ const {
   createProduct,
   deleteProductById,
   editProductById,
-  validateFields,
 } = require("./product.services");
 const router = express.Router();
 
@@ -18,17 +17,17 @@ router.get("/", async (_, res) => {
     const products = await getAllProducts();
     res.send(products);
   } catch (error) {
-    res.status(400).send(error.message);
+    res.status(400).send({ message: error.message });
   }
 });
 
 router.get("/:id", async (req, res) => {
   try {
-    const productId = req.params.id; // string
-    const product = await findProductById(parseInt(productId));
+    const productId = parseInt(req.params.id, 10);
+    const product = await findProductById(productId);
     res.send(product);
   } catch (error) {
-    res.status(400).send(error.message);
+    res.status(400).send({ message: error.message });
   }
 });
 
@@ -41,46 +40,53 @@ router.post("/", async (req, res) => {
       message: "Product added successfully",
     });
   } catch (error) {
-    res.status(400).send(error.message);
+    res.status(400).send({ message: error.message });
   }
 });
 
 router.put("/:id", async (req, res) => {
   try {
-    const productId = req.params.id; // string
+    const productId = parseInt(req.params.id, 10);
     const productData = req.body;
-    validateFields(productData);
-    const product = await editProductById(parseInt(productId), productData);
+    if (
+      !productData.name ||
+      !productData.price ||
+      !productData.description ||
+      !productData.image
+    ) {
+      throw new Error("Please provide all the required fields");
+    }
+    const product = await editProductById(productId, productData);
     res.send({
       data: product,
       message: `product with id: ${productId} updated with put successfully`,
     });
   } catch (error) {
-    res.status(400).send(error.message);
+    res.status(400).send({ message: error.message });
   }
 });
 
 router.patch("/:id", async (req, res) => {
   try {
-    const productId = req.params.id; // string
+    const productId = parseInt(req.params.id, 10);
     const productData = req.body;
-    const product = await editProductById(parseInt(productId), productData);
+    const product = await editProductById(productId, productData);
     res.send({
       data: product,
-      message: `product with id: ${productId} updated successfully`,
+      message: `product with id: ${productId} updated with patch successfully`,
     });
   } catch (error) {
-    res.status(400).send(error.message);
+    res.status(400).send({ message: error.message });
   }
 });
 
 router.delete("/:id", async (req, res) => {
   try {
-    const productId = req.params.id; //string
-    await deleteProductById(parseInt(productId));
+    const productId = parseInt(req.params.id, 10);
+    await deleteProductById(productId);
     res.send(`product with id: ${productId} deleted successfully`);
   } catch (error) {
-    res.status(400).send(error.message);
+    res.status(400).send({ message: error.message });
   }
 });
 
